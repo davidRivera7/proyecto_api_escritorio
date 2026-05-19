@@ -1,0 +1,10 @@
+desktopApp\controller\DepartmentClient.class
+desktopApp\view\Home.class
+desktopApp\controller\DeptManagerClient.class
+desktopApp\controller\EmployeeClient.class
+desktopApp\view\Home$1.class
+desktopApp\Main.class
+desktopApp\model\Department.class
+desktopApp\model\DeptManager.class
+desktopApp\model\Model.class
+desktopApp\model\Employee.class

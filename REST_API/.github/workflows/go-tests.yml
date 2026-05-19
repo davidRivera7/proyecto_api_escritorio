@@ -1,0 +1,32 @@
+name: Go CI (Pruebas Automatizadas)
+
+# 1. ¿Cuándo se va a ejecutar esto?
+on:
+  push:
+    branches: [ "master", "main" ] # Se activa al subir cambios a master o main
+  pull_request:
+    branches: [ "master", "main" ]
+
+# 2. ¿Qué va a hacer la máquina virtual de GitHub?
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Usará un servidor con Linux Ubuntu
+
+    defaults:
+      run:
+        working-directory: ./REST_API
+        
+    steps:
+    - name: Descargar el código del repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar el entorno de Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.26' # La versión de Go que estás usando
+
+    - name: Instalar dependencias
+      run: go mod download
+
+    - name: Ejecutar pruebas (Tests)
+      run: go test -v ./...

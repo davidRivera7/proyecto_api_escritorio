@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Contenedor de la Base de Datos
+  db:
+    image: mysql:8.0
+    container_name: mysql_api_contenedor
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mi_password_secreto
+      MYSQL_DATABASE: employees
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmi_password_secreto"]
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Contenedor de tu API de Go
+  api:
+    build: .
+    container_name: go_api_contenedor
+    ports:
+      - "8080:8080"
+    depends_on:      
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db # Docker mapea el nombre del servicio como si fuera la IP
+      - DB_USER=root
+      - DB_PASSWORD=mi_password_secreto
+      - DB_NAME=employees
+
+volumes:
+  mysql_data: # Esto evita que los datos se borren al apagar el contenedor

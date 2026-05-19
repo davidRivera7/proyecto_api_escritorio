@@ -1,0 +1,65 @@
+-------------------------------------------
+EMPLOYEES
+
+READ (TODOS):
+curl.exe -X GET http://localhost:8080/employees
+
+READ (UNO)
+curl.exe -X GET http://localhost:8080/employees/10001
+
+UPDATE:
+curl.exe -X PUT http://localhost:8080/employees/10001 -H "Content-Type: application/json" -d --% "{\"birth_date\":\"1953-09-02\", \"first_name\":\"David\", \"last_name\":\"Rivera\", \"gender\":\"M\", \"hire_date\":\"1986-06-26\"}"
+
+CREATE:
+curl.exe -X POST http://localhost:8080/employees -H "Content-Type: application/json" -d --% "{\"birth_date\":\"2003-08-05\", \"first_name\":\"Selene\", \"last_name\":\"Ponce\", \"gender\":\"F\", \"hire_date\":\"1996-06-26\"}"
+
+DELETE:
+curl.exe -X DELETE http://localhost:8080/employees/500000
+
+
+
+--------------------------------------------
+DEPARTMENTS
+
+READ (TODOS):
+curl.exe -X GET http://localhost:8080/departments
+
+READ (UNO)
+curl.exe -X GET http://localhost:8080/departments/"d009"
+
+UPDATE:
+curl.exe -X PUT http://localhost:8080/departments/"d009" -H "Content-Type: application/json" -d --% "{\"dept_name\":\"Auto Service\"}"
+
+CREATE:
+curl.exe -X POST http://localhost:8080/departments -H "Content-Type: application/json" -d --% "{\"dept_name\":\"Spanish Language Service\"}"
+
+DELETE:
+curl.exe -X DELETE http://localhost:8080/departments/"d010"
+
+
+
+-------------------------------------------------
+DEPT_MANAGERS
+
+READ (TODOS):
+curl.exe -X GET http://localhost:8080/dept_managers
+
+READ (UNO)
+curl.exe -X GET http://localhost:8080/dept_managers/111692
+
+CREATE:
+curl.exe -X POST http://localhost:8080/dept_managers -H "Content-Type: application/json" -d --% "{\"dept_no\":\"d008\",\"emp_no\":111692,\"from_date\":\"2000-10-10\",\"to_date\":\"2025-10-10\"}"
+
+DELETE:
+curl.exe -X DELETE http://localhost:8080/dept_managers/111692/d008
+
+
+
+Administrar los contenedores del Proyecto escribiendo los commandos desde la carpeta del proyecto:
+# Apagar:
+docker compose down
+
+#Encender:
+docker compose up -d
+
+
