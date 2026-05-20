@@ -55,7 +55,8 @@ curl.exe -X DELETE http://localhost:8080/dept_managers/111692/d008
 
 
 
-Administrar los contenedores del Proyecto escribiendo los commandos desde la carpeta del proyecto:
+Administrar los contenedores del Proyecto escribiendo los comandos desde la carpeta del Proyecto /REST_API:
+
 # Apagar:
 docker compose down
 
