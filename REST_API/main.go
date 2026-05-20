@@ -53,9 +53,9 @@ func SetupRoutes(db *sql.DB) http.Handler {
 func main() {
 	// Configuración de conexión MySQL
 	usuario := "root"
-	password := "mi_password_secreto"  
+	password := "mi_password_secreto"  // <-- funciona para la BD MySQL del contenedor Docker
 	//password := "paraPHPescolar" //<-- funciona para mi BD MySQL local
-	host := "db"
+	host := "db" // <-- funciona para la BD MySQL del contenedor Docker
 	//host := "localhost" //<-- funciona para mi BD MySQL local
 	puerto := "3306"	
 	nombreBD := "employees" 
