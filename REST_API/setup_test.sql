@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS employees (
 
 INSERT INTO employees (emp_no, birth_date, first_name, last_name, gender, hire_date) 
 VALUES 
-(10001, '1953-09-02', 'Georgi', 'Facello', 'M', '1986-06-26'),
-(10002, '1964-06-02', 'Bezalel', 'Simmel', 'F', '1985-11-21');
+(10001, '2003-09-27', 'David', 'Rivera', 'M', '2025-06-26'),
+(10002, '1964-06-02', 'Eduardo', 'Ponce', 'M', '1985-11-21');

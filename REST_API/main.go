@@ -13,6 +13,43 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// SetupRoutes configura y devuelve el manejador con todas las rutas de la API
+func SetupRoutes(db *sql.DB) http.Handler {
+	// 1. Inyectar nuestras dependencias usando la BD que nos pasen
+	//Employee
+	employeeStore := store.NewEmployeeStore(db)
+	employeeService := service.NewEmployeeService(employeeStore)
+	employeeHandler := transport.NewEmployeeHandler(employeeService)
+
+	//Department
+	departmentStore := store.NewDepartmentStore(db)
+	departmentService := service.NewDepartmentService(departmentStore)
+	departmentHandler := transport.NewDepartmentHandler(departmentService)
+
+	//DeptManager
+	deptManagerStore := store.NewDeptManagerStore(db)
+	deptManagerService := service.NewDeptManagerService(deptManagerStore)
+	deptManagerHandler := transport.NewDeptManagerHandler(deptManagerService)
+
+	// 2. Usamos un ServeMux local en lugar del global para poder probarlo aisladamente
+	mux := http.NewServeMux()
+
+	// Configurar las rutas
+	//Employee
+	mux.HandleFunc("/employees", employeeHandler.HandleEmployees)
+	mux.HandleFunc("/employees/", employeeHandler.HandleEmployeeByID)
+
+	//Department
+	mux.HandleFunc("/departments", departmentHandler.HandleDepartments)
+	mux.HandleFunc("/departments/", departmentHandler.HandleDepartmentByID)
+
+	//DeptManager
+	mux.HandleFunc("/dept_managers", deptManagerHandler.HandleDeptManagers)
+	mux.HandleFunc("/dept_managers/", deptManagerHandler.HandleDeptManager)	
+
+	return mux
+}
+
 func main() {
 	// Configuración de conexión MySQL
 	usuario := "root"
@@ -47,34 +84,8 @@ func main() {
         log.Fatal("No se pudo conectar a MySQL definitivamente:", pingErr)	
 	}
 
-	// Inyectar nuestras dependencias
-	//Employee
-	employeeStore := store.NewEmployeeStore(db)
-	employeeService := service.NewEmployeeService(employeeStore)
-	employeeHandler := transport.NewEmployeeHandler(employeeService)
-
-	//Department
-	departmentStore := store.NewDepartmentStore(db)
-	departmentService := service.NewDepartmentService(departmentStore)
-	departmentHandler := transport.NewDepartmentHandler(departmentService)
-
-	//DeptManager
-	deptManagerStore := store.NewDeptManagerStore(db)
-	deptManagerService := service.NewDeptManagerService(deptManagerStore)
-	deptManagerHandler := transport.NewDeptManagerHandler(deptManagerService)
-
-	// Configurar las rutas
-	//Employee
-	http.HandleFunc("/employees", employeeHandler.HandleEmployees)
-	http.HandleFunc("/employees/", employeeHandler.HandleEmployeeByID)
-
-	//Department
-	http.HandleFunc("/departments", departmentHandler.HandleDepartments)
-	http.HandleFunc("/departments/", departmentHandler.HandleDepartmentByID)
-
-	//DeptManager
-	http.HandleFunc("/dept_managers", deptManagerHandler.HandleDeptManagers)
-	http.HandleFunc("/dept_managers/", deptManagerHandler.HandleDeptManager)
+	//PASAMOS LAS RUTAS AL SERVIDOR
+	router := SetupRoutes(db)
 
 	fmt.Println("🚀 Servidor ejecutándose en http://localhost:8080")
 	fmt.Println("📚 API Endpoints:")
@@ -98,7 +109,7 @@ func main() {
 	fmt.Println("   POST   /dept_managers			- Crear un nuevo gerente de departamento")
 	fmt.Println("   GET    /dept_managers/{emp_id}	- Obtener los departamentos que maneja un empleado específico")
 	fmt.Println("   DELETE /dept_managers/{emp_id}/{dept_id} - Eliminar un gerente de departamento específico")
-
-	// Empezar y escuchar al servidor
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	
+	// Empezar y escuchar al servidor usando nuestro enrutador configurado
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
