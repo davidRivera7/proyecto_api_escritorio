@@ -1,4 +1,4 @@
-name: Go CI (Pruebas Automatizadas)
+name: Go CI con Pruebas de Integración
 
 # 1. ¿Cuándo se va a ejecutar esto?
 on:
@@ -15,7 +15,19 @@ jobs:
     defaults:
       run:
         working-directory: ./REST_API
-        
+
+    # Levanta un MySQL real dentro del servidor de GitHub
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password_local
+          MYSQL_DATABASE: employees
+        ports:
+          - 3306:3306
+        # Espera a que MySQL esté completamente listo antes de iniciar los pasos
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
     - name: Descargar el código del repositorio
       uses: actions/checkout@v4
@@ -23,10 +35,14 @@ jobs:
     - name: Configurar el entorno de Go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.26' # La versión de Go que estás usando
+        go-version: '1.26' 
 
     - name: Instalar dependencias
       run: go mod download
 
-    - name: Ejecutar pruebas (Tests)
+    # Inyecta los datos de prueba en el MySQL de GitHub antes del test
+    - name: Inicializar Base de Datos de Prueba
+      run: mysql -h 127.0.0.1 -u root -ppassword_local < setup_test.sql
+
+    - name: Ejecutar pruebas de Integración
       run: go test -v ./...
