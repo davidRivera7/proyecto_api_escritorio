@@ -27,6 +27,7 @@ public class Home extends javax.swing.JFrame {
         tableModel = (DefaultTableModel) table.getModel();
         
         setVisible(true);
+        setLocationRelativeTo(null);
     }
 
     /**
